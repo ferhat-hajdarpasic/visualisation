@@ -7,7 +7,8 @@ export class MapContainer extends Component {
   state = {
     showingInfoWindow: false,
     activeMarker: {},
-    selectedPlace: {}
+    selectedPlace: {},
+    mushrooms: []
   };
 
   onMarkerClick = (props, marker, e) =>
@@ -26,14 +27,27 @@ export class MapContainer extends Component {
     }
   };
 
+  async componentDidMount() {
+    try {
+      let response = await fetch('http://demo.airtracker.io/api/clusters/1/1');
+      let json = await response.json();
+      let mushrooms = json.map(m => Object.assign(m, {position:{lat:m.lat, lng:m.lng}}));
+      console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
+      this.setState({mushrooms: mushrooms});
+    } catch (e) {
+      console.log(e);
+    }
+  }
   render() {
     return (
       <CurrentLocation
         centerAroundCurrentLocation
         google={this.props.google}
+        mushrooms={this.state.mushrooms}
       >
-        <Marker onClick={this.onMarkerClick} name={'current location'} />
-        <Marker onClick={this.onMarkerClick} name={'current location 1'} />
+        
+    { this.state.mushrooms.length ? this.state.mushrooms.map(m => <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position}/>) : [] }
+        
         <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
           <div>
             <h4>{this.state.selectedPlace.name}</h4>
