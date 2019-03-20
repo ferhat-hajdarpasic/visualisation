@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Text } from 'react';
 import { GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
 
 import CurrentLocation from './Map';
@@ -32,7 +32,7 @@ export class MapContainer extends Component {
       let response = await fetch('http://demo.airtracker.io/api/clusters/1/1');
       let json = await response.json();
       let mushrooms = json.map(m => Object.assign(m, {position:{lat:m.lat, lng:m.lng}}));
-      console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
+      // console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
       this.setState({mushrooms: mushrooms});
     } catch (e) {
       console.log(e);
@@ -46,11 +46,15 @@ export class MapContainer extends Component {
         mushrooms={this.state.mushrooms}
       >
         
-    { this.state.mushrooms.length ? this.state.mushrooms.map(m => <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position}/>) : [] }
+    { this.state.mushrooms.length ? this.state.mushrooms.map(
+          m => 
+          <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position} key={m.mushroom_id} label={`${m.value}`}>
+          </Marker>) : [] }
         
         <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
           <div>
             <h4>{this.state.selectedPlace.name}</h4>
+            <h3>FRED</h3>
           </div>
         </InfoWindow>
       </CurrentLocation>
@@ -58,6 +62,8 @@ export class MapContainer extends Component {
   }
 }
 
+console.log(`${JSON.stringify(process.env)}`);
+
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyBfICw1Yc-dPq0XWnbPP5ReFmYbrdVWYk0'
+  apiKey: `${process.env.GOOGLE_API_KEY}`
 })(MapContainer);

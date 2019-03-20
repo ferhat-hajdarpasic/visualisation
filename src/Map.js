@@ -91,10 +91,10 @@ export class CurrentLocation extends React.Component {
             return React.cloneElement(c, {
                 map: this.map,
                 google: this.props.google,
-                mapCenter: {
-                    lat: this.state.currentLocation.lat + 0.0045*Math.random(),
-                    lng: this.state.currentLocation.lng + 0.0045*Math.random()
-                }
+                // mapCenter: {
+                    // lat: this.state.currentLocation.lat + 0.0045*Math.random(),
+                    // lng: this.state.currentLocation.lng + 0.0045*Math.random()
+                // }
             });
         });
     }
@@ -114,7 +114,7 @@ export class CurrentLocation extends React.Component {
 export default CurrentLocation;
 
 CurrentLocation.defaultProps = {
-    zoom: 14,
+    zoom: 6,
     initialCenter: {
         lat: -1.2884,
         lng: 36.8233
