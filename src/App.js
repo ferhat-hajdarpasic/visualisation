@@ -1,7 +1,9 @@
 import React, { Component, Text } from 'react';
 import { GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
 import CurrentLocation from './Map';
-
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import GOOGLE_API_KEY from './GOOGLE_API_KEY';
 
 export class MapContainer extends Component {
@@ -53,10 +55,20 @@ export class MapContainer extends Component {
           </Marker>) : [] }
         
         <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
-          <div>
-            <h4>{this.state.selectedPlace.name}</h4>
-            <h3>FRED</h3>
-          </div>
+          <Paper>
+            <Typography
+              variant = 'headline'
+              component = 'h4'
+            >
+              {this.state.selectedPlace.name}
+            </Typography>
+            <Typography
+              component = 'p'
+            >
+              98G Albe Dr Newark, DE 19702 <br />
+              302-293-8627
+            </Typography>
+          </Paper>
         </InfoWindow>
       </CurrentLocation>
     );
