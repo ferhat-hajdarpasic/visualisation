@@ -23,7 +23,12 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
+import FaceIcon from '@material-ui/icons/Face';
+import DoneIcon from '@material-ui/icons/Done';
 
+import POLLUTANTS from './pollutants'
 import GOOGLE_API_KEY from './GOOGLE_API_KEY';
 
 const drawerWidth = 240;
@@ -83,6 +88,16 @@ const styles = theme => ({
     }),
     marginLeft: 0,
   },
+  pollutants: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flexWrap: 'none',
+    padding: theme.spacing.unit / 2,
+  },
+  chip: {
+    margin: theme.spacing.unit / 2,
+  }
 });
 
 export class MapContainer extends Component {
@@ -124,7 +139,7 @@ export class MapContainer extends Component {
       let response = await fetch('http://demo.airtracker.io/api/clusters/1/1');
       let json = await response.json();
       let mushrooms = json.map(m => Object.assign(m, { position: { lat: m.lat, lng: m.lng } }));
-      // console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
+      console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
       this.setState({ mushrooms: mushrooms });
     } catch (e) {
       console.log(e);
@@ -174,10 +189,10 @@ export class MapContainer extends Component {
           </div>
           <Divider />
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
+            {POLLUTANTS.map((pollutant, index) => (
+              <ListItem button key={index}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={pollutant.name} />
               </ListItem>
             ))}
           </List>
@@ -198,33 +213,33 @@ export class MapContainer extends Component {
         >
           <div className={classes.drawerHeader} />
           <CurrentLocation
-        centerAroundCurrentLocation
-        google={this.props.google}
-        mushrooms={this.state.mushrooms}
-      >
+            centerAroundCurrentLocation
+            google={this.props.google}
+            mushrooms={this.state.mushrooms}
+          >
 
-        {this.state.mushrooms.length ? this.state.mushrooms.map(
-          m =>
-            <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position} key={m.mushroom_id} label={`${m.value}`}>
-            </Marker>) : []}
+            {this.state.mushrooms.length ? this.state.mushrooms.map(
+              m =>
+                <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position} key={m.mushroom_id} label={`${m.value}`}>
+                </Marker>) : []}
 
-        <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
-          <Paper>
-            <Typography
-              variant='headline'
-              component='h4'
-            >
-              {this.state.selectedPlace.name}
-            </Typography>
-            <Typography
-              component='p'
-            >
-              98G Albe Dr Newark, DE 19702 <br />
-              {this.state.selectedPlace.label}
-            </Typography>
-          </Paper>
-        </InfoWindow>
-      </CurrentLocation>
+            <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
+              <Paper>
+                <Typography
+                  variant='headline'
+                  component='h4'
+                >
+                  {this.state.selectedPlace.name}
+                </Typography>
+                <Typography
+                  component='p'
+                >
+                  98G Albe Dr Newark, DE 19702 <br />
+                  {this.state.selectedPlace.label}
+                </Typography>
+              </Paper>
+            </InfoWindow>
+          </CurrentLocation>
         </main>
       </div>
     );
@@ -238,4 +253,4 @@ MapContainer.propTypes = {
 
 export default GoogleApiWrapper({
   apiKey: GOOGLE_API_KEY
-})( withStyles(styles, { withTheme: true })(MapContainer));
+})(withStyles(styles, { withTheme: true })(MapContainer));
