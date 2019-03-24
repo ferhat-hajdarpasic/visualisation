@@ -138,7 +138,19 @@ export class MapContainer extends Component {
   async pollutantSelected(pollutant) {
     try {
       let mushrooms = await this.fetchMushrooms(pollutant.metricId);
-      // this.setState({ mushrooms: mushrooms });
+      //Just temporary because we are playing with lng and lat of mushrooms on the server
+      let positions = {};
+      this.state.mushrooms.forEach(mushroom => {
+        positions[mushroom.mushroom_id]=mushroom.position;
+      });
+      for(let i=0; i < mushrooms.length; i++) {
+        let mushroom = mushrooms[i];
+        mushroom.position.lat = positions[mushroom.mushroom_id].lat;
+        mushroom.position.lng = positions[mushroom.mushroom_id].lng;
+        mushroom.lat = positions[mushroom.mushroom_id].lat;
+        mushroom.lng = positions[mushroom.mushroom_id].lng;
+      };
+      this.setState({ mushrooms: mushrooms });
     } catch (e) {
       console.log(e);
     }
@@ -148,6 +160,7 @@ export class MapContainer extends Component {
     try {
       let mushrooms = await this.fetchMushrooms(1);
       this.setState({ mushrooms: mushrooms });
+      console.log(`mushrooms: ${JSON.stringify(mushrooms)}`);
     } catch (e) {
       console.log(e);
     }
@@ -157,7 +170,6 @@ export class MapContainer extends Component {
     let response = await fetch(`http://demo.airtracker.io/api/clusters/1/${metricId}`);
     let json = await response.json();
     let mushrooms = json.map(m => Object.assign(m, { position: { lat: m.lat, lng: m.lng } }));
-    console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
     return mushrooms;
   }
 
