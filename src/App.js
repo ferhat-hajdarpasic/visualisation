@@ -29,6 +29,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import DoneIcon from '@material-ui/icons/Done';
 
 import POLLUTANTS from './pollutants'
+import AMBIEANT from '././ambient'
 import GOOGLE_API_KEY from './GOOGLE_API_KEY';
 
 const drawerWidth = 240;
@@ -134,16 +135,30 @@ export class MapContainer extends Component {
     }
   };
 
+  async pollutantSelected(pollutant) {
+    try {
+      let mushrooms = await this.fetchMushrooms(pollutant.metricId);
+      // this.setState({ mushrooms: mushrooms });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async componentDidMount() {
     try {
-      let response = await fetch('http://demo.airtracker.io/api/clusters/1/1');
-      let json = await response.json();
-      let mushrooms = json.map(m => Object.assign(m, { position: { lat: m.lat, lng: m.lng } }));
-      console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
+      let mushrooms = await this.fetchMushrooms(1);
       this.setState({ mushrooms: mushrooms });
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async fetchMushrooms(metricId) {
+    let response = await fetch(`http://demo.airtracker.io/api/clusters/1/${metricId}`);
+    let json = await response.json();
+    let mushrooms = json.map(m => Object.assign(m, { position: { lat: m.lat, lng: m.lng } }));
+    console.log(`mushroos: ${JSON.stringify(mushrooms)}`);
+    return mushrooms;
   }
 
   render() {
@@ -190,18 +205,23 @@ export class MapContainer extends Component {
           <Divider />
           <List>
             {POLLUTANTS.map((pollutant, index) => (
-              <ListItem button key={index}>
+              <ListItem button key={index} onClick={() => this.pollutantSelected(pollutant)}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={pollutant.name} />
               </ListItem>
             ))}
           </List>
-          <Divider />
+          <li>
+            <Typography variant="h6" className={classes.title}>
+              Ambient
+            </Typography>
+          </li>
+
           <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
+            {AMBIEANT.map((pollutant, index) => (
+              <ListItem button key={index} onClick={() => this.pollutantSelected(pollutant)}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={pollutant.name} />
               </ListItem>
             ))}
           </List>
