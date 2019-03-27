@@ -27,6 +27,14 @@ import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import FaceIcon from '@material-ui/icons/Face';
 import DoneIcon from '@material-ui/icons/Done';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+
+import Card from './ChartCard';
 
 import POLLUTANTS from './pollutants'
 import AMBIEANT from '././ambient'
@@ -107,8 +115,16 @@ export class MapContainer extends Component {
     activeMarker: {},
     selectedPlace: {},
     mushrooms: [],
-    open: false
+    lastSamples: [{}],
+    open: false,
 
+    bottomDrawerOpened: false,
+
+  };
+
+  toggleBottomDrawer = (open) => {
+    console.log(`TOGGLE ${this.state.bottomDrawerOpened}`);
+    this.setState({ bottomDrawerOpened: open });
   };
 
   handleDrawerOpen = () => {
@@ -119,12 +135,18 @@ export class MapContainer extends Component {
     this.setState({ open: false });
   };
 
-  onMarkerClick = (props, marker, e) =>
+  onMarkerClick = async (props, marker, e) => {
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
       showingInfoWindow: true
     });
+    const device_id = props.name;
+    let response = await fetch(`http://demo.airtracker.io/api/mushrooms/${device_id}/lastsamples`);
+    let lastSamples = await response.json();
+    console.log(`Device id=${device_id}, json=${JSON.stringify(lastSamples)}`);
+    this.setState({ lastSamples: lastSamples });
+  }
 
   onClose = props => {
     if (this.state.showingInfoWindow) {
@@ -141,9 +163,9 @@ export class MapContainer extends Component {
       //Just temporary because we are playing with lng and lat of mushrooms on the server
       let positions = {};
       this.state.mushrooms.forEach(mushroom => {
-        positions[mushroom.mushroom_id]=mushroom.position;
+        positions[mushroom.mushroom_id] = mushroom.position;
       });
-      for(let i=0; i < mushrooms.length; i++) {
+      for (let i = 0; i < mushrooms.length; i++) {
         let mushroom = mushrooms[i];
         mushroom.position.lat = positions[mushroom.mushroom_id].lat;
         mushroom.position.lng = positions[mushroom.mushroom_id].lng;
@@ -198,6 +220,12 @@ export class MapContainer extends Component {
             <Typography variant="h6" color="inherit" noWrap>
               Persistent drawer
             </Typography>
+            <Button onClick={() => this.toggleBottomDrawer(true)}>Open Bottom</Button>
+            <SwipeableDrawer anchor="bottom" open={this.state.bottomDrawerOpened}
+              onClose={() => this.toggleBottomDrawer(false)}
+              onOpen={() => this.toggleBottomDrawer(true)}>
+              <Card mushroomId='003f5a70' pollutantId='1' />
+            </SwipeableDrawer>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -257,18 +285,25 @@ export class MapContainer extends Component {
 
             <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
               <Paper>
-                <Typography
-                  variant='headline'
-                  component='h4'
-                >
-                  {this.state.selectedPlace.name}
-                </Typography>
-                <Typography
-                  component='p'
-                >
-                  98G Albe Dr Newark, DE 19702 <br />
-                  {this.state.selectedPlace.label}
-                </Typography>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="right">Time</TableCell>
+                      <TableCell align="right">Pollutant (g)</TableCell>
+                      <TableCell align="right">Value</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {this.state.lastSamples.map(sample => (
+                      <TableRow key={sample.metric_id}>
+                        <TableCell align="right">{sample.time}</TableCell>
+                        <TableCell align="right">{sample.metric}</TableCell>
+                        <TableCell align="right">{sample.value}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
               </Paper>
             </InfoWindow>
           </CurrentLocation>
