@@ -34,7 +34,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
-import Card from './ChartCard';
+import CenteredTabs from './CenteredTabs';
 
 import POLLUTANTS from './pollutants'
 import AMBIEANT from '././ambient'
@@ -224,7 +224,7 @@ export class MapContainer extends Component {
             <SwipeableDrawer anchor="bottom" open={this.state.bottomDrawerOpened}
               onClose={() => this.toggleBottomDrawer(false)}
               onOpen={() => this.toggleBottomDrawer(true)}>
-              <Card mushroomId='003f5a70' pollutantId='1' />
+              <CenteredTabs mushroomId='003f5a70' pollutantId='1'/>
             </SwipeableDrawer>
           </Toolbar>
         </AppBar>
