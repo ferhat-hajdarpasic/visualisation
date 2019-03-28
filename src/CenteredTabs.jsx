@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import moment from "moment";
-import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area } from "recharts";
+import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer } from "recharts";
 
 const styles = {
     root: {
@@ -113,61 +113,42 @@ class CenteredTabs extends React.Component {
 
         return (
             <Paper className={classes.root}>
-                <Tabs
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                >
+                <Tabs value={this.state.value} onChange={this.handleChange} indicatorColor="primary" textColor="primary" centered>
                     <Tab label="DAY" />
                     <Tab label="WEEK" />
                     <Tab label="MONTH" />
                     <Tab label="YEAR" />
                 </Tabs>
-                <Grid
-                    container
-                    spacing={0}
-                    direction="column"
-                    alignItems="center"
-                    justify="center"
-                >
-
-                    <Grid item xs={3}>
-                        <Card>
-                            <AreaChart
-                                width={420}
-                                height={190}
-                                data={this.state.chartData[this.state.selectedTimeSpanFilter]}
-                                margin={{ top: 10, right: 15, left: -30, bottom: 0 }}>
-                                <defs>
-                                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#005691" stopOpacity={0.5} />
-                                        <stop offset="95%" stopColor="#005691" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <XAxis
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    dataKey="name"
-                                    minTickGap={6}
-                                />
-                                <YAxis tickLine={false} axisLine={false} />
-                                <CartesianGrid vertical={false} stroke="#ccdfeb" />
-                                <Tooltip />
-                                <Area
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#005691"
-                                    isAnimationActive={false}
-                                    strokeWidth={4}
-                                    fillOpacity={1}
-                                    fill="url(#colorUv)"
-                                />
-                            </AreaChart>
-                        </Card>
-                    </Grid>
+                <Grid container spacing={0} direction="column" alignItems="center" justify="center" style={{ width: '100%', height: 300 }}>
+                    <ResponsiveContainer>
+                        <AreaChart margin={{ top: 5, right: 30, left: 30, bottom: 5 }} data={this.state.chartData[this.state.selectedTimeSpanFilter]} >
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#005691" stopOpacity={0.5} />
+                                    <stop offset="95%" stopColor="#005691" stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
+                            <XAxis
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                dataKey="name"
+                                minTickGap={6}
+                            />
+                            <YAxis tickLine={false} axisLine={false} />
+                            <CartesianGrid vertical={false} stroke="#ccdfeb" />
+                            <Tooltip />
+                            <Area
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#005691"
+                                isAnimationActive={false}
+                                strokeWidth={4}
+                                fillOpacity={1}
+                                fill="url(#colorUv)"
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
                 </Grid>
 
             </Paper>
