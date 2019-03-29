@@ -10,6 +10,9 @@ export default function reducer(state = initialState, action) {
         case 'SET_POLLUTANT':
             console.log("REDUX: SET_POLLUTANT=" + JSON.stringify(action.pollutant));
             return { ...state, pollutant: action.pollutant };
+        case 'SET_MUSHROOM':
+            console.log("REDUX: SET_MUSHROOM=" + JSON.stringify(action.mushroomId));
+            return { ...state, selectedMushroomId: action.mushroomId };
         default:
             return state;
     }

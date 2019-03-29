@@ -198,7 +198,7 @@ class PrimarySearchAppBar extends React.Component {
             <SwipeableDrawer anchor="bottom" open={this.state.bottomDrawerOpened}
               onClose={() => this.toggleBottomDrawer(false)}
               onOpen={() => this.toggleBottomDrawer(true)}>
-              <TimeSeries mushroomId='003f5a70' pollutantId='1' />
+              <TimeSeries/>
             </SwipeableDrawer>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>

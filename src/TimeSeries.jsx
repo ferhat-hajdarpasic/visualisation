@@ -23,7 +23,11 @@ class TimeSeries extends React.Component {
     };
 
     fetchChartData = async (value) => {
-        let id = this.props.mushroomId;
+        let id = this.props.selectedMushroomId;
+        console.log(`Time-series for MushroomId=${id}/${this.props.pollutant}`);
+        if(!id) {
+            return;
+        }
         switch (value) {
             case 0:
                 let hourData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/hours/24`)).json();
@@ -41,6 +45,7 @@ class TimeSeries extends React.Component {
                         }).reverse()
                     }
                 });
+                console.log(`hourData=${JSON.stringify(hourData)}`);
                 break;
             case 1:
                 let dayData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/days/7`)).json();
@@ -58,7 +63,7 @@ class TimeSeries extends React.Component {
                         }),
                     }
                 });
-                // console.log(`dayData=${JSON.stringify(dayData)}`);
+                console.log(`dayData=${JSON.stringify(dayData)}`);
                 break;
             case 2:
                 let monthData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/days/31`)).json();
@@ -76,7 +81,7 @@ class TimeSeries extends React.Component {
                         })
                     }
                 });
-                // console.log(`monthData=${JSON.stringify(monthData)}`);
+                console.log(`monthData=${JSON.stringify(monthData)}`);
                 break;
             case 3:
                 let yearData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/months/12`)).json();
@@ -94,7 +99,7 @@ class TimeSeries extends React.Component {
                         })
                     }
                 });
-                // console.log(`yearData=${JSON.stringify(yearData)}`);
+                console.log(`yearData=${JSON.stringify(yearData)}`);
                 break;
         }
     };

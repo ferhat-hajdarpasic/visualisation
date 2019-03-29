@@ -102,16 +102,22 @@ export class MapContainer extends Component {
   };
 
   onMarkerClick = async (props, marker, e) => {
+    const device_id = props.name;
+    this.props.selectMushroom(device_id);
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
       showingInfoWindow: true
     });
-    const device_id = props.name;
-    let response = await fetch(`http://demo.airtracker.io/api/mushrooms/${device_id}/lastsamples`);
-    let lastSamples = await response.json();
-    // console.log(`Device id=${device_id}, json=${JSON.stringify(lastSamples)}`);
-    this.setState({ lastSamples: lastSamples });
+
+    try {
+      let response = await fetch(`http://demo.airtracker.io/api/mushrooms/${device_id}/lastsamples`);
+      let lastSamples = await response.json();
+      // console.log(`Device id=${device_id}, json=${JSON.stringify(lastSamples)}`);
+      this.setState({ lastSamples: lastSamples });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   onClose = props => {
@@ -124,7 +130,7 @@ export class MapContainer extends Component {
   };
 
   async componentWillReceiveProps(newProps, oldProps) {
-    if(newProps.pollutant != oldProps.pollutant) {
+    if (newProps.pollutant != oldProps.pollutant) {
       await this.pollutantSelected(newProps.pollutant);
     }
   }
@@ -173,18 +179,18 @@ export class MapContainer extends Component {
     return (
       <div>
         <CssBaseline />
-        <PrimarySearchAppBar  position="fixed"
+        <PrimarySearchAppBar position="fixed"
           className={classNames(classes.appBar, {
             [classes.appBarShift]: this.props.leftnavigatorOpen,
           })} />
-        <PersistentDrawerLeft/>
+        <PersistentDrawerLeft />
         <main>
           <CurrentLocation centerAroundCurrentLocation google={this.props.google} mushrooms={this.state.mushrooms}>
             {
               this.state.mushrooms.length ? this.state.mushrooms.map(
-              m =>
-                <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position} key={m.mushroom_id} label={`${m.value}`}>
-                </Marker>) : []
+                m =>
+                  <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position} key={m.mushroom_id} label={`${m.value}`}>
+                  </Marker>) : []
             }
             <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
               <Paper>
@@ -225,7 +231,8 @@ const mapStateToProps = state => ({
   ...state
 });
 const mapDispatchToProps = dispatch => ({
-  openLeftNav: () => dispatch({type:'SET_LEFT_NAV', open: true})
+  openLeftNav: () => dispatch({ type: 'SET_LEFT_NAV', open: true }),
+  selectMushroom: (mushroomId) => dispatch({ type: 'SET_MUSHROOM', mushroomId: mushroomId })
 });
 
 export default GoogleApiWrapper({
