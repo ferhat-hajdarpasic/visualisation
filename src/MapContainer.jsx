@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -190,10 +191,16 @@ export class MapContainer extends Component {
               this.state.mushrooms.length ? this.state.mushrooms.map(
                 m =>
                   <Marker onClick={this.onMarkerClick} name={m.mushroom_id} position={m.position} key={m.mushroom_id} label={`${m.value}`}>
+                  
                   </Marker>) : []
             }
             <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow} onClose={this.onClose}>
               <Paper>
+                <div className={classes.title}>
+                  <Typography variant="h6" id="tableTitle">
+                  {`Most recent measurements for ${this.props.selectedMushroomId}` }
+                  </Typography>
+                </div>
                 <Table className={classes.table}>
                   <TableHead>
                     <TableRow>

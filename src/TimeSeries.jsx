@@ -1,5 +1,6 @@
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
@@ -117,6 +118,11 @@ class TimeSeries extends React.Component {
 
         return (
             <Paper className={classes.root}>
+            <div className={classes.title}>
+                  <Typography variant="h6" id="tableTitle">
+                  {`Device ${this.props.selectedMushroomId}, Time-series for polutant  ${this.props.pollutant} time period ${this.state.selectedTimeSpanFilter}`}
+                  </Typography>
+                </div>
                 <Tabs value={this.state.value} onChange={this.handleChange} indicatorColor="primary" textColor="primary" centered>
                     <Tab label="DAY" />
                     <Tab label="WEEK" />
