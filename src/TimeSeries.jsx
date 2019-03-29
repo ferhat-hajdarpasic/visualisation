@@ -1,14 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 import moment from "moment";
-import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer } from "recharts";
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from "react-redux";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const styles = {
     root: {
@@ -16,7 +15,7 @@ const styles = {
     },
 };
 
-class CenteredTabs extends React.Component {
+class TimeSeries extends React.Component {
     state = {
         value: 0,
         selectedTimeSpanFilter: "DAY",
@@ -25,10 +24,9 @@ class CenteredTabs extends React.Component {
 
     fetchChartData = async (value) => {
         let id = this.props.mushroomId;
-        let pollutantId = this.props.pollutantId;
         switch (value) {
             case 0:
-                let hourData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${pollutantId}/history/hours/24`)).json();
+                let hourData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/hours/24`)).json();
                 this.setState({
                     value,
                     selectedTimeSpanFilter: 'DAY',
@@ -45,7 +43,7 @@ class CenteredTabs extends React.Component {
                 });
                 break;
             case 1:
-                let dayData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${pollutantId}/history/days/7`)).json();
+                let dayData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/days/7`)).json();
                 this.setState({
                     value,
                     selectedTimeSpanFilter: 'WEEK',
@@ -63,7 +61,7 @@ class CenteredTabs extends React.Component {
                 // console.log(`dayData=${JSON.stringify(dayData)}`);
                 break;
             case 2:
-                let monthData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${pollutantId}/history/days/31`)).json();
+                let monthData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/days/31`)).json();
                 this.setState({
                     value,
                     selectedTimeSpanFilter: 'MONTH',
@@ -81,7 +79,7 @@ class CenteredTabs extends React.Component {
                 // console.log(`monthData=${JSON.stringify(monthData)}`);
                 break;
             case 3:
-                let yearData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${pollutantId}/history/months/12`)).json();
+                let yearData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${this.props.pollutant}/history/months/12`)).json();
                 this.setState({
                     value,
                     selectedTimeSpanFilter: 'YEAR',
@@ -157,18 +155,14 @@ class CenteredTabs extends React.Component {
     }
 }
 
-CenteredTabs.propTypes = {
+TimeSeries.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
     ...state
   });
-  const mapDispatchToProps = dispatch => ({
-    startAction: () => dispatch(startAction),
-    stopAction: () => dispatch(stopAction)
-  });
- 
-  export default connect(mapStateToProps, mapDispatchToProps)(
-    withStyles(styles)(CenteredTabs)
+
+  export default connect(mapStateToProps, null)(
+    withStyles(styles)(TimeSeries)
   );

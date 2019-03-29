@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Menu from '@material-ui/core/Menu';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
@@ -16,6 +18,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import TimeSeries from './TimeSeries';
 import { connect } from "react-redux";
 
 const styles = theme => ({
@@ -92,6 +95,12 @@ class PrimarySearchAppBar extends React.Component {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
+    bottomDrawerOpened: false
+  };
+
+  toggleBottomDrawer = (open) => {
+    console.log(`TOGGLE ${this.state.bottomDrawerOpened}`);
+    this.setState({ bottomDrawerOpened: open });
   };
 
   handleProfileMenuOpen = event => {
@@ -185,6 +194,12 @@ class PrimarySearchAppBar extends React.Component {
                 }}
               />
             </div>
+            <Button color="inherit" onClick={() => this.toggleBottomDrawer(true)}>Time-Series</Button>
+            <SwipeableDrawer anchor="bottom" open={this.state.bottomDrawerOpened}
+              onClose={() => this.toggleBottomDrawer(false)}
+              onOpen={() => this.toggleBottomDrawer(true)}>
+              <TimeSeries mushroomId='003f5a70' pollutantId='1' />
+            </SwipeableDrawer>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               <IconButton color="inherit">
@@ -228,7 +243,7 @@ const mapStateToProps = state => ({
   ...state
 });
 const mapDispatchToProps = dispatch => ({
-  openLeftNav: () => dispatch({type:'SET_LEFT_NAV', open: true})
+  openLeftNav: () => dispatch({ type: 'SET_LEFT_NAV', open: true })
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
