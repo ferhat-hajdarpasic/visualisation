@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import moment from "moment";
 import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area, ResponsiveContainer } from "recharts";
+import { connect } from "react-redux";
 
 const styles = {
     root: {
@@ -59,7 +60,7 @@ class CenteredTabs extends React.Component {
                         }),
                     }
                 });
-                console.log(`dayData=${JSON.stringify(dayData)}`);
+                // console.log(`dayData=${JSON.stringify(dayData)}`);
                 break;
             case 2:
                 let monthData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${pollutantId}/history/days/31`)).json();
@@ -77,7 +78,7 @@ class CenteredTabs extends React.Component {
                         })
                     }
                 });
-                console.log(`monthData=${JSON.stringify(monthData)}`);
+                // console.log(`monthData=${JSON.stringify(monthData)}`);
                 break;
             case 3:
                 let yearData = await (await fetch(`http://demo.airtracker.io/api/mushrooms/${id}/${pollutantId}/history/months/12`)).json();
@@ -95,7 +96,7 @@ class CenteredTabs extends React.Component {
                         })
                     }
                 });
-                console.log(`yearData=${JSON.stringify(yearData)}`);
+                // console.log(`yearData=${JSON.stringify(yearData)}`);
                 break;
         }
     };
@@ -160,4 +161,14 @@ CenteredTabs.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CenteredTabs);
+const mapStateToProps = state => ({
+    ...state
+  });
+  const mapDispatchToProps = dispatch => ({
+    startAction: () => dispatch(startAction),
+    stopAction: () => dispatch(stopAction)
+  });
+ 
+  export default connect(mapStateToProps, mapDispatchToProps)(
+    withStyles(styles)(CenteredTabs)
+  );
